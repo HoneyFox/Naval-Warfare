@@ -18,7 +18,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj1 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v1 = obj1.GetComponent<Vehicle>();
         v1.side = 0;
-        obj1.transform.parent = SceneManager.instance.transform.FindChild("Side 0");
+        obj1.transform.parent = SceneManager.instance.transform.Find("Side 0");
         v1.course = 270f;
         obj1.GetComponent<Locomotor>().orderedCourse = 270f;
         v1.position = new Vector3(42000f, 0f, 1000f);
@@ -28,7 +28,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj2 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v2 = obj2.GetComponent<Vehicle>();
         v2.side = 1;
-        obj2.transform.parent = SceneManager.instance.transform.FindChild("Side 1");
+        obj2.transform.parent = SceneManager.instance.transform.Find("Side 1");
         v2.course = 90f;
         obj2.GetComponent<Locomotor>().orderedCourse = 90f;
         v2.position = new Vector3(-42000f, 0f, -1000f);
@@ -42,7 +42,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj3 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["OH Perry FFG"]);
         Vehicle v3 = obj3.GetComponent<Vehicle>();
         v3.side = 0;
-        obj3.transform.parent = SceneManager.instance.transform.FindChild("Side 0");
+        obj3.transform.parent = SceneManager.instance.transform.Find("Side 0");
         v3.course = 270f;
         obj3.GetComponent<Locomotor>().orderedCourse = 270f;
         v3.position = new Vector3(28000f, 0f, 2000f);
@@ -52,7 +52,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj4 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["OH Perry FFG"]);
         Vehicle v4 = obj4.GetComponent<Vehicle>();
         v4.side = 1;
-        obj4.transform.parent = SceneManager.instance.transform.FindChild("Side 1");
+        obj4.transform.parent = SceneManager.instance.transform.Find("Side 1");
         v4.course = 90f;
         obj4.GetComponent<Locomotor>().orderedCourse = 90f;
         v4.position = new Vector3(-28000f, 0f, -2000f);
@@ -66,7 +66,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj5 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Kilo SSK"]);
         Vehicle v5 = obj5.GetComponent<Vehicle>();
         v5.side = 0;
-        obj5.transform.parent = SceneManager.instance.transform.FindChild("Side 0");
+        obj5.transform.parent = SceneManager.instance.transform.Find("Side 0");
         v5.course = 270f;
         obj5.GetComponent<Locomotor>().orderedCourse = 270f;
         v5.position = new Vector3(9000f, -50f, 4000f);
@@ -76,7 +76,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj6 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Kilo SSK"]);
         Vehicle v6 = obj6.GetComponent<Vehicle>();
         v6.side = 1;
-        obj6.transform.parent = SceneManager.instance.transform.FindChild("Side 1");
+        obj6.transform.parent = SceneManager.instance.transform.Find("Side 1");
         v6.course = 90f;
         obj6.GetComponent<Locomotor>().orderedCourse = 90f;
         v6.position = new Vector3(-9000f, -50f, -4000f);
@@ -90,7 +90,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj7 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Wasp LHD"]);
         Vehicle v7 = obj7.GetComponent<Vehicle>();
         v7.side = 0;
-        obj7.transform.parent = SceneManager.instance.transform.FindChild("Side 0");
+        obj7.transform.parent = SceneManager.instance.transform.Find("Side 0");
         v7.course = 270f;
         obj7.GetComponent<Locomotor>().orderedCourse = 270f;
         v7.position = new Vector3(44000f, 0f, 1500f);
@@ -100,7 +100,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj8 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Wasp LHD"]);
         Vehicle v8 = obj8.GetComponent<Vehicle>();
         v8.side = 1;
-        obj8.transform.parent = SceneManager.instance.transform.FindChild("Side 1");
+        obj8.transform.parent = SceneManager.instance.transform.Find("Side 1");
         v8.course = 90f;
         obj8.GetComponent<Locomotor>().orderedCourse = 90f;
         v8.position = new Vector3(-44000f, 0f, -1500f);
@@ -114,7 +114,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj9 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v9 = obj9.GetComponent<Vehicle>();
         v9.side = 0;
-        obj9.transform.parent = SceneManager.instance.transform.FindChild("Side 0");
+        obj9.transform.parent = SceneManager.instance.transform.Find("Side 0");
         v9.course = 270f;
         obj9.GetComponent<Locomotor>().orderedCourse = 270f;
         v9.position = new Vector3(30000f, 0f, 1000f);
@@ -124,7 +124,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         GameObject obj10 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v10 = obj10.GetComponent<Vehicle>();
         v10.side = 1;
-        obj10.transform.parent = SceneManager.instance.transform.FindChild("Side 1");
+        obj10.transform.parent = SceneManager.instance.transform.Find("Side 1");
         v10.course = 90f;
         obj10.GetComponent<Locomotor>().orderedCourse = 90f;
         v10.position = new Vector3(-30000f, 0f, -1000f);

@@ -15,7 +15,11 @@ public class FrameBinder : MonoBehaviour
         if(capturer != null)
         {
             Renderer renderer = this.GetComponentInChildren<Renderer>();
-            renderer.materials[renderer.materials.Length - 1].SetTexture("_MainTex", capturer.lastFrame);
+            for (int i = 0; i < renderer.materials.Length; ++i)
+            {
+                if (renderer.materials[i].HasProperty("_DistortionLayer"))
+                    renderer.materials[i].SetTexture("_MainTex", capturer.lastFrame);
+            }
             lastFrame = capturer.lastFrame;
         }
     }
@@ -25,7 +29,11 @@ public class FrameBinder : MonoBehaviour
         if(capturer.lastFrame != lastFrame)
         {
             Renderer renderer = this.GetComponentInChildren<Renderer>();
-            renderer.materials[renderer.materials.Length - 1].SetTexture("_MainTex", capturer.lastFrame);
+            for (int i = 0; i < renderer.materials.Length; ++i)
+            {
+                if (renderer.materials[i].HasProperty("_DistortionLayer"))
+                    renderer.materials[i].SetTexture("_MainTex", capturer.lastFrame);
+            }
             lastFrame = capturer.lastFrame;
         }
     }

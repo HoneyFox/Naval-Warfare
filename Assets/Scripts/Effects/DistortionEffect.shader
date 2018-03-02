@@ -1,4 +1,6 @@
-﻿Shader "Particles/DistortionEffect"
+﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
+Shader "Particles/DistortionEffect"
 {
 	Properties
 	{
@@ -65,7 +67,7 @@
 			v2f vert (appdata_t v)
 			{
 				v2f o;
-				float4 vertexProj = mul(UNITY_MATRIX_MVP, v.vertex);
+				float4 vertexProj = UnityObjectToClipPos(v.vertex);
 				o.vertex = vertexProj;
 				o.color = v.color;
 				o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex) * _DistortionST.xy + _DistortionST.zw;
@@ -78,20 +80,23 @@
 
 			half4 frag (v2f i) : COLOR
 			{
-				float4 fragProj = mul(UNITY_MATRIX_MVP, float4(i.worldxy, i.worldzw));
+				float4 fragProj = UnityObjectToClipPos(float4(i.worldxy, i.worldzw));
 				half2 screenPosition = half2(fragProj.x / fragProj.w * 0.5 + 0.5, fragProj.y / fragProj.w * 0.5 + 0.5);
+				half2 invScreenPosition = half2(fragProj.x / fragProj.w * 0.5 + 0.5, -fragProj.y / fragProj.w * 0.5 + 0.5);
 				half2 screenDepth = half2(fragProj.z / fragProj.w, fragProj.w);
 				//float depth = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, screenPosition));
 				float selfDepth = screenDepth.x;
-				half4 originalTex = tex2D(_MainTex, screenPosition);
+				//return half4(selfDepth, 0, 0, 1);
+				half4 originalTex = tex2D(_MainTex, invScreenPosition);
 				half4 distortionTexBase = tex2D(_DistortionLayer, i.texcoord);
 				half4 distortionTex = tex2D(_DistortionLayer, i.texcoord + float2(_Time.y, _Time.y));
 				half2 distortion = distortionTex - distortionTexBase;
-				float depthDistorted = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, screenPosition + distortion.xy * _Strength));
-				half4 renderTex = tex2D(_MainTex, screenPosition + distortion.xy * _Strength);
+				float depthDistorted = UNITY_SAMPLE_DEPTH(tex2D(_CameraDepthTexture, invScreenPosition + distortion.xy * _Strength));
+				//return half4(depthDistorted, 0, 0, 1);
+				half4 renderTex = tex2D(_MainTex, invScreenPosition + distortion.xy * _Strength);
 				
-				if(depthDistorted >= selfDepth)
-					return half4(lerp(originalTex, renderTex, _Alpha).rgb, distortionTex.w * _Alpha);
+				if (depthDistorted <= selfDepth)
+					return half4(lerp(originalTex, renderTex, _Alpha).rgb, 1);//distortionTex.w * _Alpha);
 				else
 					return half4(0, 0, 0, 0);
 

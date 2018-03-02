@@ -19,25 +19,25 @@ public class AircraftLocomotor : AeroLocomotor
         if (self.enabled)
         {
             float aoa = Mathf.Clamp((stdSpd * stdSpd / self.speed / self.speed) * stdAoA, 0f, maxAoA);
-            Transform model = self.transform.FindChild("Model");
+            Transform model = self.transform.Find("Model");
             if (model != null)
                 model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.Euler(-aoa, 0f, 0f), 0.08f);
-            Transform sensor = self.transform.FindChild("Sensors");
+            Transform sensor = self.transform.Find("Sensors");
             if (sensor != null)
                 sensor.localRotation = Quaternion.Slerp(sensor.localRotation, Quaternion.Euler(-aoa, 0f, 0f), 0.08f);
-            Transform launcher = self.transform.FindChild("Launchers");
+            Transform launcher = self.transform.Find("Launchers");
             if (launcher != null)
                 launcher.localRotation = Quaternion.Slerp(launcher.localRotation, Quaternion.Euler(-aoa, 0f, 0f), 0.08f);
         }
         else
         {
-            Transform model = self.transform.FindChild("Model");
+            Transform model = self.transform.Find("Model");
             if (model != null)
                 model.localRotation = Quaternion.Slerp(model.localRotation, Quaternion.Euler(0f, 0f, 0f), 0.08f);
-            Transform sensor = self.transform.FindChild("Sensors");
+            Transform sensor = self.transform.Find("Sensors");
             if (sensor != null)
                 sensor.localRotation = Quaternion.Slerp(sensor.localRotation, Quaternion.Euler(0f, 0f, 0f), 0.08f);
-            Transform launcher = self.transform.FindChild("Launchers");
+            Transform launcher = self.transform.Find("Launchers");
             if (launcher != null)
                 launcher.localRotation = Quaternion.Slerp(launcher.localRotation, Quaternion.Euler(0f, 0f, 0f), 0.08f);
         }

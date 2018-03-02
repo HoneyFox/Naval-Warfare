@@ -165,7 +165,7 @@ public class Launcher : MonoBehaviour
         {
             if (fireControlChannels.Count < maxFireControlChannels)
             {
-                vehicle.transform.parent = SceneManager.instance.transform.FindChild("Side " + self.side.ToString());
+                vehicle.transform.parent = SceneManager.instance.transform.Find("Side " + self.side.ToString());
                 vehicle.transform.position = this.transform.position;
 
                 float expectedCourse = Mathf.Rad2Deg * Mathf.Atan2(target.predictedPositionAtTime(eta).x - vehicle.transform.localPosition.x, target.predictedPositionAtTime(eta).z - vehicle.transform.localPosition.z);
@@ -201,7 +201,7 @@ public class Launcher : MonoBehaviour
                         GameObject muzzleFXInstance = (GameObject)GameObject.Instantiate(muzzleFX);
                         muzzleFXInstance.transform.parent = SceneManager.instance.transform;
                         muzzleFXInstance.transform.position = this.transform.position;
-                        muzzleFXInstance.particleSystem.Play(true);
+                        muzzleFXInstance.GetComponent<ParticleSystem>().Play(true);
                     }
                 }
                 if (currentSalvoCount == salvoCount)
@@ -220,7 +220,7 @@ public class Launcher : MonoBehaviour
         }
         else
         {
-            vehicle.transform.parent = SceneManager.instance.transform.FindChild("Side " + self.side.ToString());
+            vehicle.transform.parent = SceneManager.instance.transform.Find("Side " + self.side.ToString());
             vehicle.transform.position = this.transform.position;
 
             float expectedCourse = Mathf.Rad2Deg * Mathf.Atan2(target.predictedPositionAtTime(eta).x - vehicle.transform.localPosition.x, target.predictedPositionAtTime(eta).z - vehicle.transform.localPosition.z);
@@ -255,7 +255,7 @@ public class Launcher : MonoBehaviour
                     GameObject muzzleFXInstance = (GameObject)GameObject.Instantiate(muzzleFX);
                     muzzleFXInstance.transform.parent = SceneManager.instance.transform;
                     muzzleFXInstance.transform.position = this.transform.position;
-                    muzzleFXInstance.particleSystem.Play(true);
+                    muzzleFXInstance.GetComponent<ParticleSystem>().Play(true);
                 }
             }
             if (currentSalvoCount == salvoCount)
@@ -318,7 +318,7 @@ public class Launcher : MonoBehaviour
         if (warhead != null)
             warhead.SetupTarget(position);
 
-        vehicle.transform.parent = SceneManager.instance.transform.FindChild("Side " + self.side.ToString());
+        vehicle.transform.parent = SceneManager.instance.transform.Find("Side " + self.side.ToString());
         vehicle.transform.position = this.transform.position;
 
         float expectedCourse = Mathf.Rad2Deg * Mathf.Atan2(position.x - vehicle.transform.localPosition.x, position.z - vehicle.transform.localPosition.z);
@@ -353,7 +353,7 @@ public class Launcher : MonoBehaviour
                 GameObject muzzleFXInstance = (GameObject)GameObject.Instantiate(muzzleFX);
                 muzzleFXInstance.transform.parent = SceneManager.instance.transform;
                 muzzleFXInstance.transform.position = this.transform.position;
-                muzzleFXInstance.particleSystem.Play(true);
+                muzzleFXInstance.GetComponent<ParticleSystem>().Play(true);
             }
         }
         if (currentSalvoCount == salvoCount)

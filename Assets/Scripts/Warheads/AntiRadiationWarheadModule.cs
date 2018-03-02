@@ -18,7 +18,7 @@ public class AntiRadiationWarheadModule : WarheadModule
                 explosionFXObj.transform.parent = self.transform;
                 explosionFXObj.transform.localPosition = Vector3.zero;
                 explosionFXObj.transform.parent = SceneManager.instance.transform;
-                explosionFXObj.particleSystem.Play(true);
+                explosionFXObj.GetComponent<ParticleSystem>().Play(true);
             }
         }
 

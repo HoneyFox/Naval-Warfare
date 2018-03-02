@@ -344,7 +344,7 @@ public class Vehicle : MonoBehaviour
         {
             if (sVehicleCanBeTracked[typeName])
             {
-                orderedVectorLineRenderer = this.transform.FindChild("Model").gameObject.AddComponent<LineRenderer>();
+                orderedVectorLineRenderer = this.transform.Find("Model").gameObject.AddComponent<LineRenderer>();
                 orderedVectorLineRenderer.SetColors(new Color(1f, 0, 0f, 0.25f), Color.red);
                 orderedVectorLineRenderer.SetVertexCount(2);
                 orderedVectorLineRenderer.SetWidth(defaultWidth, 0f);
