@@ -543,7 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initCodes: 'global hasTakenOff = false
 
-    global particleEmitter = selfVehicle.transform.Find("Model/Bubble").particleEmitter'
+    global particleEmitter = selfVehicle.transform.Find("Model/Bubble").GetComponent("ParticleEmitter")'
   fixedUpdateCodes: "if hasTakenOff == false then\n  selfVehicle.fuel = selfVehicle.maxFuel\n
     \ if selfVehicle.takeOffFrom ~= nil then\n    hasTakenOff = true\n    selfVehicle.pitch
     = 0.0\n    selfVehicle.side = -1\n    selfVehicle.transform.parent = selfVehicle.transform.parent.parent.Find(\"Side
