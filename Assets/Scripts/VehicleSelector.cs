@@ -74,11 +74,11 @@ public class VehicleSelector : MonoBehaviour
     {
         if (selectedVehicle != null)
         {
-            vehicleCamera.GetComponent<MouseOrbit>().isEnabled = true;
+            vehicleCamera.GetComponent<MouseOrbit>().enabled = true;
         }
         else
         {
-            vehicleCamera.GetComponent<MouseOrbit>().isEnabled = false;
+            vehicleCamera.GetComponent<MouseOrbit>().enabled = false;
         }
     }
 

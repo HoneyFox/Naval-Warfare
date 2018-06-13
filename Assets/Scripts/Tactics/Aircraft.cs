@@ -19,6 +19,7 @@ public class Aircraft : Vehicle
     public float landSpeedConstant = 0f;
 
     Track mainTrack = null;
+    Dictionary<Track, Coroutine> coroutinesForTrackTactic = new Dictionary<Track, Coroutine>();
 
     public override void OnTakeOff(Vehicle fromVehicle)
     {
@@ -75,7 +76,12 @@ public class Aircraft : Vehicle
                     }
                 }
             }
-            this.StartCoroutine(TrackTactic(track));
+
+            if (coroutinesForTrackTactic.ContainsKey(track) == false)
+            {
+                Coroutine newTrackTacticCoroutine = this.StartCoroutine(TrackTactic(track));
+                coroutinesForTrackTactic[track] = newTrackTacticCoroutine;
+            }
         }
     }
 
@@ -190,6 +196,8 @@ public class Aircraft : Vehicle
                         {
                             mainTrack = null;
                             locomotor.orderedSpeed = Mathf.Min(maxSpeed * 0.6f, locomotor.orderedSpeed);
+
+                            coroutinesForTrackTactic.Remove(track);
                             yield break;
                         }
                         else if (launcherCtrl.FindBestVehicleFor(track, false, true) == "")
@@ -197,6 +205,8 @@ public class Aircraft : Vehicle
                             yield return new WaitForSeconds(UnityEngine.Random.Range(5f, 10f));
                             mainTrack = null;
                             locomotor.orderedSpeed = Mathf.Min(maxSpeed * 0.6f, locomotor.orderedSpeed);
+
+                            coroutinesForTrackTactic.Remove(track);
                             yield break;
                         }
                         else
@@ -246,6 +256,7 @@ public class Aircraft : Vehicle
 
         locomotor.orderedSpeed = Mathf.Min(maxSpeed * 0.6f, locomotor.orderedSpeed);
 
+        coroutinesForTrackTactic.Remove(track);
         yield break;
     }
 

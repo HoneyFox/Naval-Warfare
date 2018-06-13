@@ -50,7 +50,15 @@ public class WarheadModule : MonoBehaviour
         {
             if (target != null)
             {
-                if (Vector3.Distance(target.predictedPosition, self.position) < proximityRange)
+                if (target.target != null)
+                {
+                    if (Vector3.Distance(target.target.position, self.position) - target.target.size < proximityRange)
+                    {
+                        // Kaboom!
+                        Ignite();
+                    }
+                }
+                else if (Vector3.Distance(target.predictedPosition, self.position) < proximityRange)
                 {
                     // Kaboom!
                     Ignite();

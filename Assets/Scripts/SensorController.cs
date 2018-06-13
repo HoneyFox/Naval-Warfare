@@ -58,7 +58,7 @@ public class SensorController : MonoBehaviour
         {
             if(tracksDetected[i].isLost)
             {
-                Debug.Log(self.typeName + " lost track of " + tracksDetected[i].vehicleTypeName + ".");
+                //Debug.Log(self.typeName + " lost track of " + tracksDetected[i].vehicleTypeName + ".");
                 tracksDetected.RemoveAt(i);
                 --i;
             }

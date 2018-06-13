@@ -52,6 +52,7 @@ public class Vehicle : MonoBehaviour
         sVehiclePrefabPaths["AGM-88 HARM"] = "Prefab/Vessels/AGM-88 HARM";
         sVehiclePrefabPaths["Sub Decoy"] = "Prefab/Vessels/Sub Decoy";
         sVehiclePrefabPaths["Towed Sonar Decoy"] = "Prefab/Vessels/Towed Sonar Decoy";
+        sVehiclePrefabPaths["Ship Decoy"] = "Prefab/Vessels/Ship Decoy";
 
         sVehicleTypes["OH Perry FFG"] = VehicleType.Surf;
         sVehicleTypes["Arleigh Burke DDG"] = VehicleType.Surf;
@@ -78,6 +79,7 @@ public class Vehicle : MonoBehaviour
         sVehicleTypes["AGM-88 HARM"] = VehicleType.Air;
         sVehicleTypes["Sub Decoy"] = VehicleType.Sub;
         sVehicleTypes["Towed Sonar Decoy"] = VehicleType.Sub;
+        sVehicleTypes["Ship Decoy"] = VehicleType.Surf;
 
         sVehicleCanEngage["OH Perry FFG"] = new bool[4] { false, false, false, false };
         sVehicleCanEngage["Arleigh Burke DDG"] = new bool[4] { false, false, false, false};
@@ -104,6 +106,7 @@ public class Vehicle : MonoBehaviour
         sVehicleCanEngage["AGM-88 HARM"] = new bool[4] { true, false, false, true };
         sVehicleCanEngage["Sub Decoy"] = new bool[4] { false, false, false, false };
         sVehicleCanEngage["Towed Sonar Decoy"] = new bool[4] { false, false, false, false };
+        sVehicleCanEngage["Ship Decoy"] = new bool[4] { false, false, false, false };
 
         sVehicleCanBeEngaged["OH Perry FFG"] = new bool[3] { false, true, true };
         sVehicleCanBeEngaged["Arleigh Burke DDG"] = new bool[3] { false, true, true };
@@ -130,6 +133,7 @@ public class Vehicle : MonoBehaviour
         sVehicleCanBeEngaged["AGM-88 HARM"] = new bool[3] { false, false, true };
         sVehicleCanBeEngaged["Sub Decoy"] = new bool[3] { false, true, true };
         sVehicleCanBeEngaged["Towed Sonar Decoy"] = new bool[3] { false, true, true };
+        sVehicleCanBeEngaged["Ship Decoy"] = new bool[3] { false, false, true };
 
         sVehicleRanges["OH Perry FFG"] = float.MaxValue;
         sVehicleRanges["Arleigh Burke DDG"] = float.MaxValue;
@@ -156,6 +160,7 @@ public class Vehicle : MonoBehaviour
         sVehicleRanges["AGM-88 HARM"] = 125000;
         sVehicleRanges["Sub Decoy"] = 600;
         sVehicleRanges["Towed Sonar Decoy"] = 10000;
+        sVehicleRanges["Ship Decoy"] = 20000;
 
         sVehicleMaxSpeed["OH Perry FFG"] = 16;
         sVehicleMaxSpeed["Arleigh Burke DDG"] = 17;
@@ -182,6 +187,7 @@ public class Vehicle : MonoBehaviour
         sVehicleMaxSpeed["AGM-88 HARM"] = 800;
         sVehicleMaxSpeed["Sub Decoy"] = 30;
         sVehicleMaxSpeed["Towed Sonar Decoy"] = 30;
+        sVehicleMaxSpeed["Ship Decoy"] = 1000;
 
         sVehicleCanBeTracked["OH Perry FFG"] = true;
         sVehicleCanBeTracked["Arleigh Burke DDG"] = true;
@@ -208,16 +214,19 @@ public class Vehicle : MonoBehaviour
         sVehicleCanBeTracked["AGM-88 HARM"] = true;
         sVehicleCanBeTracked["Sub Decoy"] = true;
         sVehicleCanBeTracked["Towed Sonar Decoy"] = true;
+        sVehicleCanBeTracked["Ship Decoy"] = true;
         
         sVehicleTaskTypes["SH-60 SeaHawk"] = new VehicleType[] { VehicleType.Sub };
         sVehicleTaskTypes["AV-8 Harrier"] = new VehicleType[] { VehicleType.Air, VehicleType.Surf };
         sVehicleTaskTypes["Sub Decoy"] = new VehicleType[] { VehicleType.Sub };
         sVehicleTaskTypes["Towed Sonar Decoy"] = new VehicleType[] { VehicleType.Sub };
+        sVehicleTaskTypes["Ship Decoy"] = new VehicleType[] { VehicleType.Air };
 
         sVehicleTakeOffMethods["SH-60 SeaHawk"] = new string[] { "HeloStrip", "LargeHeloStrip" };
         sVehicleTakeOffMethods["AV-8 Harrier"] = new string[] { "Catapult", "LargeHeloStrip" };
         sVehicleTakeOffMethods["Sub Decoy"] = new string[] { "CounterMeasureLauncher" };
         sVehicleTakeOffMethods["Towed Sonar Decoy"] = new string[] { "CounterMeasureDeployer" };
+        sVehicleTakeOffMethods["Ship Decoy"] = new string[] { "CounterMeasureLauncher" };
         
         sVehicleLandMethods["SH-60 SeaHawk"] = new string[] { "HeloStrip", "LargeHeloStrip" };
         sVehicleLandMethods["AV-8 Harrier"] = new string[] { "LargeHeloStrip", "ArrestCable" };

@@ -183,14 +183,14 @@ public class Airstrip : MonoBehaviour
             {
                 // The vehicle is taking off. Detach the vehicle.
                 vehicleAttached.transform.parent = self.transform.parent;
-                vehicleAttached.GetComponent<Vehicle>().position = vehicleAttached.transform.position;
+                vehicleAttached.position = vehicleAttached.transform.position;
                 Vector3 launchVector = launchEndPoint.position + launchEndPoint.forward * 100f;
                 float course = Mathf.Rad2Deg * Mathf.Atan2(launchVector.x - launchEndPoint.position.x, launchVector.z - launchEndPoint.position.z);
                 float pitch = Mathf.Rad2Deg * Mathf.Atan2(launchVector.y - launchEndPoint.position.y, Mathf.Sqrt(Mathf.Pow(launchVector.z - launchEndPoint.position.z, 2) + Mathf.Pow(launchVector.x - launchEndPoint.position.x, 2)));
-                vehicleAttached.GetComponent<Vehicle>().course = course;
-                vehicleAttached.GetComponent<Vehicle>().pitch = pitch;
-                vehicleAttached.GetComponent<Vehicle>().speed = (Vector3.Distance(launchEndPoint.position, launchStartPoint.position) / (100f / launchRate));
-                vehicleAttached.GetComponent<Vehicle>().enabled = true;
+                vehicleAttached.course = vehicleAttached.locomotor.orderedCourse = course;
+                vehicleAttached.pitch = pitch;
+                vehicleAttached.speed = (Vector3.Distance(launchEndPoint.position, launchStartPoint.position) / (100f / launchRate));
+                vehicleAttached.enabled = true;
                 if(SceneManager.instance.vehicles.Contains(vehicleAttached) == false)
                     SceneManager.instance.vehicles.Add(vehicleAttached);
                 vehicleAttached.OnTakeOff(self);

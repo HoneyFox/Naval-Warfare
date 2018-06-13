@@ -279,21 +279,21 @@ AudioListener:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 450770865}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!124 &450770870
 Behaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 450770865}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!92 &450770871
 Behaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 450770865}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &450770872
 Camera:
   m_ObjectHideFlags: 0
@@ -427,19 +427,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 516264714}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27acebc9ad1110f6d00074c88d76c639, type: 3}
+  m_Script: {fileID: 11500000, guid: e6b652090a7e8fe42bbf7dff6e082cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  distance: 1000
-  xSpeed: 150
-  ySpeed: 120
-  zSpeed: 2000
-  yMinLimit: -60
+  yMinLimit: -20
   yMaxLimit: 80
-  zMinLimit: 20
+  zMinLimit: 10
   zMaxLimit: 10000
-  isEnabled: 0
   useTailMode: 0
 --- !u!1 &750022044
 GameObject:
