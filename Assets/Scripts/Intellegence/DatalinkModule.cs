@@ -29,6 +29,11 @@ public class DatalinkModule : MonoBehaviour
 
     public string datalinkTypeName = "Universal";
 
+    public float counterJamStrength = 4f;
+    public float jamState;
+
+    private bool isJamSuccessful() { return UnityEngine.Random.Range(0f, Mathf.Log10(jamState)) >= counterJamStrength; }
+
     void Start()
     {
 
@@ -36,6 +41,8 @@ public class DatalinkModule : MonoBehaviour
 
     void FixedUpdate()
     {
+        jamState *= 0.9f;
+
         if (self.isDead) return;
 
         if (Time.time > lastSyncTime + syncInterval)
@@ -67,7 +74,9 @@ public class DatalinkModule : MonoBehaviour
                     if (track.isLost) continue;
                     if (limitTrackedVehicleType && Vehicle.sVehicleTypes[track.vehicleTypeName] != trackedVehicleType) continue;
 
-                    v.GetComponent<DatalinkModule>().ReceiveTrack(track, self);
+                    // Sender side jam check.
+                    if (isJamSuccessful() == false)
+                        v.GetComponent<DatalinkModule>().ReceiveTrack(track, self);
                 }
             }
 
@@ -88,6 +97,9 @@ public class DatalinkModule : MonoBehaviour
     {
         if (self.isDead) return;
         if (self.position.y < minCommunicateDepth) return;
+        
+        // Receiver side jam check.
+        if (isJamSuccessful()) return;
 
         Track ownTrack = self.sensorCtrl.tracksDetected.Find((Track trk) => trk.target == track.target && trk.target != null);
         if (ownTrack != null)

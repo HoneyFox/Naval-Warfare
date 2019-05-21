@@ -46,6 +46,9 @@ public class Sensor : MonoBehaviour
     public float updatePeriod = 0.5f;
     public float error = 0f;
     public float identifyCapability = 20f;
+    public float counterJamStrength = 5f;
+    public bool IsJamSuccessful(float jamStrength) { return UnityEngine.Random.Range(0f, Mathf.Log10(jamStrength)) >= counterJamStrength; }
+
 
     public bool canSearchNewTrack = true;
     public bool canUpdateOldTrack = true;
@@ -132,6 +135,14 @@ public class Sensor : MonoBehaviour
                             {
                                 existingTrack.UpdateTrack(vehicle.position + detectError, vehicle.velocity + detectError * 0.1f, existingTrack.identification);
                             }
+                            JammerModule[] jammers = existingTrack.target.GetComponents<JammerModule>();
+                            if (jammers != null && jammers.Length > 0)
+                            {
+                                for(int i = 0; i < jammers.Length; ++i)
+                                {
+                                    jammers[i].OnReceivingSensorAccess(self, this, existingTrack);
+                                }
+                            }
                         }
                     }
                 }
@@ -199,6 +210,14 @@ public class Sensor : MonoBehaviour
                     else
                     {
                         track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, track.identification);
+                    }
+                    JammerModule[] jammers = track.target.GetComponents<JammerModule>();
+                    if (jammers != null && jammers.Length > 0)
+                    {
+                        for (int i = 0; i < jammers.Length; ++i)
+                        {
+                            jammers[i].OnReceivingSensorAccess(self, this, track);
+                        }
                     }
                 }
                 else

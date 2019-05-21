@@ -17,6 +17,7 @@ public class FrameCapturer : MonoBehaviour
         }
         
         this.lastFrame = new RenderTexture(Screen.width, Screen.height, 24);
+        this.lastFrame.filterMode = FilterMode.Point;
         this.GetComponent<Camera>().targetTexture = this.lastFrame;
         Camera.main.depthTextureMode = DepthTextureMode.Depth;
     }
@@ -34,6 +35,7 @@ public class FrameCapturer : MonoBehaviour
         {
             // User has resized the window.
             RenderTexture resizedRenderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+            resizedRenderTexture.filterMode = FilterMode.Point;
             GetComponent<Camera>().targetTexture = resizedRenderTexture;
             lastFrame.Release();
             lastFrame = resizedRenderTexture;

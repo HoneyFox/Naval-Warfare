@@ -206,6 +206,9 @@ GameObject:
   - component: {fileID: 11400040}
   - component: {fileID: 11400038}
   - component: {fileID: 11400006}
+  - component: {fileID: 114315415716232952}
+  - component: {fileID: 114279234919737888}
+  - component: {fileID: 114054097323933414}
   m_Layer: 0
   m_Name: Arleigh Burke DDG
   m_TagString: Untagged
@@ -6448,6 +6451,7 @@ MonoBehaviour:
   updatePeriod: 2
   error: 200
   identifyCapability: 10
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 1
   isTracker: 0
@@ -6518,6 +6522,7 @@ MonoBehaviour:
   updatePeriod: 6
   error: 100
   identifyCapability: 5
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 0
   isTracker: 0
@@ -6588,6 +6593,7 @@ MonoBehaviour:
   updatePeriod: 0.1
   error: 2
   identifyCapability: 50
+  counterJamStrength: 5
   canSearchNewTrack: 0
   canUpdateOldTrack: 0
   isTracker: 1
@@ -6613,6 +6619,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7032,6 +7040,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7053,6 +7063,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400042
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -7119,6 +7131,7 @@ MonoBehaviour:
   updatePeriod: 10
   error: 3
   identifyCapability: 20
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 1
   isTracker: 0
@@ -7189,6 +7202,7 @@ MonoBehaviour:
   updatePeriod: 0.2
   error: 20
   identifyCapability: 10
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 1
   isTracker: 1
@@ -7296,6 +7310,7 @@ MonoBehaviour:
   updatePeriod: 0.2
   error: 10
   identifyCapability: 15
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 1
   isTracker: 0
@@ -7366,6 +7381,7 @@ MonoBehaviour:
   updatePeriod: 2
   error: 50
   identifyCapability: 20
+  counterJamStrength: 5
   canSearchNewTrack: 1
   canUpdateOldTrack: 1
   isTracker: 0
@@ -8069,6 +8085,38 @@ Transform:
   m_Father: {fileID: 4442799671776866}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114054097323933414
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57339b46675d9c4887c1f6b76ce56e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSelfDefenseJamming: 0
+  jamType: 3
+  jamStrength: 1e-10
+  counterSensorType: 0
+  maxFalseTrackAge: 10
+--- !u!114 &114279234919737888
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57339b46675d9c4887c1f6b76ce56e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSelfDefenseJamming: 1
+  jamType: 2
+  jamStrength: 1200
+  counterSensorType: 3
+  maxFalseTrackAge: 10
 --- !u!114 &114304399556234426
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -8106,6 +8154,22 @@ MonoBehaviour:
   landRate: 5
   undeployEndPoint: {fileID: 4868438781826644}
   undeployRate: 10
+--- !u!114 &114315415716232952
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57339b46675d9c4887c1f6b76ce56e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSelfDefenseJamming: 1
+  jamType: 2
+  jamStrength: 500
+  counterSensorType: 2
+  maxFalseTrackAge: 10
 --- !u!114 &114795723490711964
 MonoBehaviour:
   m_ObjectHideFlags: 1

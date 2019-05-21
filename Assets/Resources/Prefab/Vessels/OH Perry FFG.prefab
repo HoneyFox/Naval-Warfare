@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 11400032}
   - component: {fileID: 11400010}
   - component: {fileID: 11400038}
+  - component: {fileID: 114014642586323424}
   m_Layer: 0
   m_Name: OH Perry FFG
   m_TagString: Untagged
@@ -3771,6 +3772,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400012
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4202,6 +4205,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400034
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -4363,6 +4368,8 @@ MonoBehaviour:
   receivers: []
   minCommunicateDepth: -20
   datalinkTypeName: Universal
+  counterJamStrength: 100
+  jamState: 0
 --- !u!114 &11400040
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -5167,6 +5174,22 @@ Transform:
   m_Father: {fileID: 4173355602450382}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -20, y: -55, z: 0}
+--- !u!114 &114014642586323424
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c57339b46675d9c4887c1f6b76ce56e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isSelfDefenseJamming: 1
+  jamType: 1
+  jamStrength: 0.00000001
+  counterSensorType: 2
+  maxFalseTrackAge: 10
 --- !u!114 &114139458521187856
 MonoBehaviour:
   m_ObjectHideFlags: 1
