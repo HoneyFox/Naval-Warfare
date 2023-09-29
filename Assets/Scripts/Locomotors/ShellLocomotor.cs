@@ -39,7 +39,7 @@ public class ShellLocomotor : Locomotor
             if (self.GetComponent<GuidanceModule>() != null)
             {
                 Vector3 origTargetPos = (Vector3)(self.GetComponent<GuidanceModule>().guidanceParameter);
-                float error = CEP * Vector3.Distance(origTargetPos, self.position) / Vehicle.sVehicleRanges[self.typeName] * 1.2f;
+                float error = CEP * Vector3.Distance(origTargetPos, self.position) / VehicleDatabase.sVehicleRanges[self.typeName] * 1.2f;
                 self.GetComponent<GuidanceModule>().guidanceParameter = origTargetPos + new Vector3(UnityEngine.Random.Range(-error, error), 0.0f, UnityEngine.Random.Range(-error, error));
                 hasGeneratedRandomError = true;
             }

@@ -63,7 +63,7 @@ namespace SharpLua
             {
                 // TODO: change this to Assembly.Load
                 // o = Assembly.Load(assembly);
-                o = Assembly.LoadWithPartialName(assembly);
+                o = Assembly.Load(assembly);
                 
                 // If the loaded assembly is null, its probably
                 // in the form of "filename.dll"

@@ -10,12 +10,6 @@ public class FrameCapturer : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
-        if(SystemInfo.supportsImageEffects == false)
-        {
-            enabled = false;
-            return;
-        }
-        
         this.lastFrame = new RenderTexture(Screen.width, Screen.height, 24);
         this.lastFrame.filterMode = FilterMode.Point;
         this.GetComponent<Camera>().targetTexture = this.lastFrame;
@@ -42,11 +36,24 @@ public class FrameCapturer : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if(this.lastFrame == null)
+        {
+            this.lastFrame = new RenderTexture(Screen.width, Screen.height, 24);
+            this.lastFrame.filterMode = FilterMode.Point;
+            this.GetComponent<Camera>().targetTexture = this.lastFrame;
+            Camera.main.depthTextureMode = DepthTextureMode.Depth;
+        }
+    }
+
     void OnDisable()
     {
         if(this.lastFrame)
         {
+            this.GetComponent<Camera>().targetTexture = null;
             DestroyImmediate(this.lastFrame);
+            this.lastFrame = null;
         }
     }
 }

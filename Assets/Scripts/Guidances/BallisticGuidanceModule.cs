@@ -29,7 +29,7 @@ public class BallisticGuidanceModule : GuidanceModule
 
         if(hasGeneratedRandomError == false)
         {
-            float error = CEP * Vector3.Distance(targetPosition, self.position) / Vehicle.sVehicleRanges[self.typeName] * 1.2f;
+            float error = CEP * Vector3.Distance(targetPosition, self.position) / VehicleDatabase.sVehicleRanges[self.typeName] * 1.2f;
             guidanceParameter = targetPosition + new Vector3(UnityEngine.Random.Range(-error, error), 0.0f, UnityEngine.Random.Range(-error, error));
             hasGeneratedRandomError = true;
         }
@@ -39,7 +39,7 @@ public class BallisticGuidanceModule : GuidanceModule
 
         float distance = Vector3.Distance(targetPosition, self.position);
         float horizontalDistance = Mathf.Sqrt((targetPosition.x - self.position.x) * (targetPosition.x - self.position.x) + (targetPosition.z - self.position.z) * (targetPosition.z - self.position.z));
-        targetPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / Vehicle.sVehicleRanges[self.typeName];
+        targetPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / VehicleDatabase.sVehicleRanges[self.typeName];
 
         // Pitch Guidance.
         float expectedPitch = Mathf.Rad2Deg * Mathf.Atan2(targetPosition.y - self.position.y, Mathf.Sqrt(Mathf.Pow(targetPosition.z - self.position.z, 2) + Mathf.Pow(targetPosition.x - self.position.x, 2)));

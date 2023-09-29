@@ -60,7 +60,7 @@ public class Aircraft : Vehicle
         base.OnNewTrack(track, source);
 
         // Only need to concern about tracks that might threaten me or about tracks that I can engage with.
-        if (Vehicle.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(track, false, false) != ""))
+        if (VehicleDatabase.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(track, false, false) != ""))
         {
             if (mainTrack == null)
             {
@@ -96,7 +96,7 @@ public class Aircraft : Vehicle
             {
                 float distance = Vector3.Distance(track.predictedPosition, position);
                 
-                if (Vehicle.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air])
+                if (VehicleDatabase.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air])
                 {
                     yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
                     if (autoDealWithAirThreats == false)
@@ -108,7 +108,7 @@ public class Aircraft : Vehicle
 
                     // This is an anti-air weapon.
 
-                    if (distance <= Vehicle.sVehicleRanges[track.vehicleTypeName] * 1.1f)
+                    if (distance <= VehicleDatabase.sVehicleRanges[track.vehicleTypeName] * 1.1f)
                     {
                         if (SceneManager.instance.GetComponent<VehicleSelector>().selectedVehicle == this)
                             Debug.Log("Anti-air weapon detected: " + track.vehicleTypeName + ". Evading!");
@@ -130,9 +130,9 @@ public class Aircraft : Vehicle
                 {
                     // This is an aircraft.
                     yield return new WaitForSeconds(UnityEngine.Random.Range(0.1f, 0.2f));
-                    if (Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoEngageAirTracks == false
-                        || Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Surf && autoEngageSurfTracks == false
-                        || Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoEngageSubTracks == false)
+                    if (VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoEngageAirTracks == false
+                        || VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Surf && autoEngageSurfTracks == false
+                        || VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoEngageSubTracks == false)
                     {
                         mainTrack = null;
                         yield return new WaitForSeconds(1.0f);
@@ -165,7 +165,7 @@ public class Aircraft : Vehicle
                         string bestWeapon = launcherCtrl.FindBestVehicleFor(track);
                         if (bestWeapon != "")
                         {
-                            float rangePercent = distance / Vehicle.sVehicleRanges[bestWeapon];
+                            float rangePercent = distance / VehicleDatabase.sVehicleRanges[bestWeapon];
                             if (rangePercent < 0.8f && (attacker == null || Time.time - timeOfAttack > 60f))
                             {
                                 if (launcherCtrl.Attack(track))
@@ -220,7 +220,7 @@ public class Aircraft : Vehicle
             {
                 foreach (Track trk in sensorCtrl.tracksDetected)
                 {
-                    if (Vehicle.sVehicleCanEngage[trk.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(trk, false, false) != ""))
+                    if (VehicleDatabase.sVehicleCanEngage[trk.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(trk, false, false) != ""))
                     {
                         if (Vector3.Distance(trk.predictedPosition, position) < Vector3.Distance(mainTrack.predictedPosition, position))
                         {
@@ -446,7 +446,7 @@ public class Aircraft : Vehicle
         result.Add("Tracks of Interest:");
         foreach(Track track in sensorCtrl.tracksDetected)
         {
-            if (Vehicle.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(track, false, false) != ""))
+            if (VehicleDatabase.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Air] || (launcherCtrl != null && launcherCtrl.FindBestVehicleFor(track, false, false) != ""))
             {
                 result.Add(track.vehicleTypeName + "(" + track.age.ToString("F0") + "): " + track.identification.ToString() + ", " + Vector3.Distance(track.predictedPosition, position).ToString("F0"));
             }

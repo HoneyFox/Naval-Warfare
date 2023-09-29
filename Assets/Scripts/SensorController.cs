@@ -5,9 +5,14 @@ using System.Linq;
 
 public class SensorController : MonoBehaviour 
 {
+    private Vehicle _cachedSelf;
     private Vehicle self
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     public List<Sensor> sensors = new List<Sensor>();

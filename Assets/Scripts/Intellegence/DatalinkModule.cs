@@ -6,9 +6,14 @@ using UnityEngine;
 
 public class DatalinkModule : MonoBehaviour
 {
+    private Vehicle _cachedSelf;
     private Vehicle self
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     public float syncInterval = 1f;
@@ -24,6 +29,7 @@ public class DatalinkModule : MonoBehaviour
     public bool isDuplex = false;
 
     public List<Vehicle> receivers = new List<Vehicle>();
+    public List<DatalinkModule> receiverDatalinks = new List<DatalinkModule>();
 
     public float minCommunicateDepth = -20f;
 
@@ -51,32 +57,33 @@ public class DatalinkModule : MonoBehaviour
 
             for (int i = 0; i < receivers.Count; ++i)
             {
-                if (receivers[i] == null || receivers[i].isDead)
+                var v = receivers[i];
+                if (v == null || v.isDead)
                 {
+                    // Remove dead receivers.
                     receivers.RemoveAt(i);
+                    receiverDatalinks.RemoveAt(i);
                     i--;
                 }
-            }
-
-            if (isDuplex == false) return;
-
-            // Send tracks detected by self to all other units of same side that have data-link installed as well.
-            foreach (Vehicle v in receivers)
-            {
-                if (v.isDead) continue;
-                if (v.side != self.side) continue;
-                if (v.GetComponent<DatalinkModule>() == null) continue;
-                if (v == self) continue;
-
-                foreach (Track track in self.sensorCtrl.tracksDetected)
+                else
                 {
-                    // Skip tracks that are considered lost (but yet to be removed from the list)
-                    if (track.isLost) continue;
-                    if (limitTrackedVehicleType && Vehicle.sVehicleTypes[track.vehicleTypeName] != trackedVehicleType) continue;
+                    // Send tracks detected by self to all other units of same side that have data-link installed as well.
+                    if (isDuplex == false) continue;
+                    if (v.side != self.side) continue;
+                    if (v == self) continue;
 
                     // Sender side jam check.
                     if (isJamSuccessful() == false)
-                        v.GetComponent<DatalinkModule>().ReceiveTrack(track, self);
+                    {
+                        foreach (Track track in self.sensorCtrl.tracksDetected)
+                        {
+                            // Skip tracks that are considered lost (but yet to be removed from the list)
+                            if (track.isLost) continue;
+                            if (limitTrackedVehicleType && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] != trackedVehicleType) continue;
+
+                            receiverDatalinks[i].ReceiveTrack(track, self);
+                        }
+                    }
                 }
             }
 
@@ -88,8 +95,15 @@ public class DatalinkModule : MonoBehaviour
     {
         if (receivers.Contains(vehicle) == false)
         {
-            if(vehicle.GetComponents<DatalinkModule>().Any((DatalinkModule dlm) => dlm.datalinkTypeName == datalinkTypeName))
-                receivers.Add(vehicle);
+            foreach (DatalinkModule dlm in vehicle.GetComponents<DatalinkModule>())
+            {
+                if (dlm.datalinkTypeName == datalinkTypeName)
+                {
+                    receivers.Add(vehicle);
+                    receiverDatalinks.Add(dlm);
+                    break;
+                }
+            }
         }
     }
     
@@ -101,7 +115,15 @@ public class DatalinkModule : MonoBehaviour
         // Receiver side jam check.
         if (isJamSuccessful()) return;
 
-        Track ownTrack = self.sensorCtrl.tracksDetected.Find((Track trk) => trk.target == track.target && trk.target != null);
+        Track ownTrack = null;
+        foreach (Track trk in self.sensorCtrl.tracksDetected)
+        {
+            if (trk.target == track.target && trk.target != null)
+            {
+                ownTrack = trk;
+                break;
+            }
+        }
         if (ownTrack != null)
         {
             // We already have the same track. See if we should update the track by checking which one is newer.

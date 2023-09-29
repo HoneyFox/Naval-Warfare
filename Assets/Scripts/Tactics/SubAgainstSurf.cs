@@ -53,7 +53,7 @@ public class SubAgainstSurf : Vehicle
     public override void OnNewTrack(Track track, string source)
     {
         base.OnNewTrack(track, source);
-        switch (Vehicle.sVehicleTypes[track.vehicleTypeName])
+        switch (VehicleDatabase.sVehicleTypes[track.vehicleTypeName])
         {
             case VehicleType.Surf:
                 this.StartCoroutine(SurfTrackTactic(track));
@@ -74,13 +74,13 @@ public class SubAgainstSurf : Vehicle
 
         while (track.target != null && track.isLost == false)
         {
-            bool isThreat = (Vehicle.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Surf] == true
-                || Vehicle.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Sub] == true);
-            if ((isThreat && Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoDealWithAirThreats == false)
-                || (isThreat && Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoDealWithSubThreats == false)
-                || (isThreat == false && Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoEngageAirTracks == false)
-                || (isThreat == false && Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Surf && autoEngageSurfTracks == false)
-                || (isThreat == false && Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoEngageSubTracks == false))
+            bool isThreat = (VehicleDatabase.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Surf] == true
+                || VehicleDatabase.sVehicleCanEngage[track.vehicleTypeName][(int)Vehicle.VehicleType.Sub] == true);
+            if ((isThreat && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoDealWithAirThreats == false)
+                || (isThreat && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoDealWithSubThreats == false)
+                || (isThreat == false && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air && autoEngageAirTracks == false)
+                || (isThreat == false && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Surf && autoEngageSurfTracks == false)
+                || (isThreat == false && VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Sub && autoEngageSubTracks == false))
             {
                 yield return new WaitForSeconds(1.0f);
                 continue;

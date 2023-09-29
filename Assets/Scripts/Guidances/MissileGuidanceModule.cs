@@ -59,7 +59,7 @@ public class MissileGuidanceModule : GuidanceModule
 
             Vector3 predictedPosition = targetTrack.predictedPositionAtTime(eta);
             float horizontalDistance = Mathf.Sqrt(Mathf.Pow(predictedPosition.z - self.position.z, 2) + Mathf.Pow(predictedPosition.x - self.position.x, 2));
-            predictedPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / Vehicle.sVehicleRanges[self.typeName];
+            predictedPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / VehicleDatabase.sVehicleRanges[self.typeName];
 
             // Pitch Guidance.
             float expectedPitch = Mathf.Rad2Deg * Mathf.Atan2(predictedPosition.y - self.position.y, horizontalDistance);
@@ -95,7 +95,7 @@ public class MissileGuidanceModule : GuidanceModule
                 lastPredictDistance = Vector3.Distance(predictedPosition, self.position);
             
             float horizontalDistance = Mathf.Sqrt(Mathf.Pow(predictedPosition.z - self.position.z, 2) + Mathf.Pow(predictedPosition.x - self.position.x, 2));
-            predictedPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / Vehicle.sVehicleRanges[self.typeName];
+            predictedPosition.y += loftCoefficient * horizontalDistance * horizontalDistance / VehicleDatabase.sVehicleRanges[self.typeName];
 
             // Pitch Guidance.
             float expectedPitch = Mathf.Rad2Deg * Mathf.Atan2(predictedPosition.y - self.position.y, horizontalDistance);

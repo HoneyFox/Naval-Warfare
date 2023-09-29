@@ -9,6 +9,7 @@ public class VehicleSelector : MonoBehaviour
 {
     public Vehicle selectedVehicle = null;
     public Camera vehicleCamera;
+    private MouseOrbit mouseOrbit;
 
     public string selectedLauncherVehicle = "";
 
@@ -29,7 +30,7 @@ public class VehicleSelector : MonoBehaviour
 
     void Start()
     {
-
+        mouseOrbit = vehicleCamera.GetComponent<MouseOrbit>();
     }
 
     public void OnVehicleDead(Vehicle vehicle)
@@ -45,7 +46,7 @@ public class VehicleSelector : MonoBehaviour
     
     public void SelectVehicle(Vehicle vehicle)
     {
-        if (Vehicle.sVehicleCanBeTracked[vehicle.typeName])
+        if (VehicleDatabase.sVehicleCanBeTracked[vehicle.typeName])
         {
             bool selected = (selectedVehicle == vehicle);
             bool nowSelected = (vehicle != null);
@@ -54,7 +55,7 @@ public class VehicleSelector : MonoBehaviour
                 //vehicleCamera.transform.parent = null;
                 selectedVehicle = null;
                 selectedLauncherVehicle = "";
-                vehicleCamera.GetComponent<MouseOrbit>().target = null;
+                mouseOrbit.target = null;
             }
             else if (selected == false && nowSelected)
             {
@@ -64,24 +65,19 @@ public class VehicleSelector : MonoBehaviour
                 vehicleCamera.transform.localPosition = new Vector3(500f, 500f, 500f);
                 vehicleCamera.transform.LookAt(vehicle.transform);
                 vehicleCamera.transform.parent = null;
-                vehicleCamera.GetComponent<MouseOrbit>().target = vehicle.transform;
-                //vehicleCamera.GetComponent<MouseOrbit>().UpdateState();
+                mouseOrbit.target = vehicle.transform;
+                //mouseOrbit.UpdateState();
             }
         }
     }
 
     void Update()
     {
-        if (selectedVehicle != null)
-        {
-            vehicleCamera.GetComponent<MouseOrbit>().enabled = true;
-        }
-        else
-        {
-            vehicleCamera.GetComponent<MouseOrbit>().enabled = false;
-        }
+        mouseOrbit.enabled = (selectedVehicle != null);
     }
 
+    private List<string> _launcherVehicles = new List<string>();
+    private List<int> _launcherVehicleCount = new List<int>();
     void OnGUI()
     {
         int i = 0;
@@ -111,7 +107,11 @@ public class VehicleSelector : MonoBehaviour
         {
             foreach (Vehicle vehicle in SceneManager.instance.vehicles)
             {
-                if (Vehicle.sVehicleCanBeTracked[vehicle.typeName])
+                float distSqr = Vector3.SqrMagnitude(vehicle.transform.position - vehicleCamera.transform.position);
+                bool isFaraway = (distSqr > 25000f * 25000f);
+                if (isFaraway) continue;
+                bool isNotVeryClose = (distSqr > 5000f * 5000f);
+                if (VehicleDatabase.sVehicleCanBeTracked[vehicle.typeName])
                 {
                     Vector3 screenPoint = vehicleCamera.WorldToScreenPoint(vehicle.transform.position);
                     if (screenPoint.z > 0)
@@ -122,7 +122,15 @@ public class VehicleSelector : MonoBehaviour
                             GUI.contentColor = Color.red;
                         else if (vehicle.side == -1)
                             GUI.contentColor = Color.white;
-                        GUI.Label(new Rect(screenPoint.x, Screen.height - screenPoint.y, 200f, 30f), vehicle.typeName);
+                        if (isNotVeryClose)
+                        {
+                            float offsetX = -2f; float offsetY = -16f;
+                            GUI.Label(new Rect(screenPoint.x + offsetX, Screen.height - screenPoint.y + offsetY, 200f, 30f), ".");
+                        }
+                        else
+                        {
+                            GUI.Label(new Rect(screenPoint.x, Screen.height - screenPoint.y, 200f, 30f), vehicle.typeName);
+                        }
                     }
                 }
             }
@@ -133,9 +141,9 @@ public class VehicleSelector : MonoBehaviour
         scrollPosition = GUILayout.BeginScrollView(scrollPosition);
         foreach(Vehicle vehicle in SceneManager.instance.vehicles)
         {
-            if (Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air && viewAir == false) continue;
-            if (Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf && viewSurf == false) continue;
-            if (Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub && viewSub == false) continue;
+            if (VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air && viewAir == false) continue;
+            if (VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf && viewSurf == false) continue;
+            if (VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub && viewSub == false) continue;
             if (vehicle.GetComponent<WarheadModule>() != null && viewWeapon == false) continue;
             if (vehicle.GetComponent<WarheadModule>() == null && viewNonWeapon == false) continue;
             if (selectedLauncherVehicle == "")
@@ -145,14 +153,23 @@ public class VehicleSelector : MonoBehaviour
                 if (vehicle.side == -1 && viewSideNeutral == false) continue;
             }
 
-            if(Vehicle.sVehicleCanBeTracked[vehicle.typeName])
+            if(VehicleDatabase.sVehicleCanBeTracked[vehicle.typeName])
             {
                 if(selectedVehicle != null && selectedLauncherVehicle != "")
                 {
                     if (vehicle.isDead) continue;
                     if (vehicle.side == -1 || vehicle.side == selectedVehicle.side) continue;
-                    if (selectedVehicle.sensorCtrl == null || selectedVehicle.sensorCtrl.tracksDetected.Exists((Track trk) => trk.target == vehicle) == false) continue; 
-                    Track track = selectedVehicle.sensorCtrl.tracksDetected.Find((Track trk) => trk.target == vehicle);
+                    if (selectedVehicle.sensorCtrl == null) continue;
+                    Track track = null;
+                    foreach (Track trk in selectedVehicle.sensorCtrl.tracksDetected)
+                    {
+                        if (trk.target == vehicle)
+                        {
+                            track = trk;
+                            break;
+                        }
+                    }
+                    if (track == null) continue; 
                     if (selectedVehicle.launcherCtrl.CanEngageWith(track, selectedLauncherVehicle, false) == false) continue;
 
                     bool engage = GUILayout.Button(vehicle.typeName, GUILayout.Height(15f));
@@ -165,12 +182,12 @@ public class VehicleSelector : MonoBehaviour
                 else
                 {
                     bool selected = selectedVehicle == vehicle;
-                    bool nowSelected = (GUILayout.Toggle(selectedVehicle == vehicle, vehicle.typeName + (vehicle.isDead ? "(Dead)" : ""), "button", GUILayout.Height(15f)));
+                    bool nowSelected = (GUILayout.Toggle(selectedVehicle == vehicle, vehicle != null ? vehicle.typeName + (vehicle.isDead ? "(Dead)" : "") : "", "button", GUILayout.Height(15f)));
                     if(selected && nowSelected == false)
                     {
                         //vehicleCamera.transform.parent = null;
                         selectedVehicle = null;
-                        vehicleCamera.GetComponent<MouseOrbit>().target = null;
+                        mouseOrbit.target = null;
                     }
                     else if(selected == false && nowSelected)
                     {
@@ -179,8 +196,8 @@ public class VehicleSelector : MonoBehaviour
                         vehicleCamera.transform.localPosition = new Vector3(500f, 500f, 500f);
                         vehicleCamera.transform.LookAt(vehicle.transform);
                         vehicleCamera.transform.parent = null;
-                        vehicleCamera.GetComponent<MouseOrbit>().target = vehicle.transform;
-                        //vehicleCamera.GetComponent<MouseOrbit>().UpdateState();
+                        mouseOrbit.target = vehicle.transform;
+                        //mouseOrbit.UpdateState();
                     }
                     ++i;
                 }
@@ -194,17 +211,25 @@ public class VehicleSelector : MonoBehaviour
             if (selectedVehicle.launcherCtrl.CanEngageWith(trackToBeEngaged, selectedLauncherVehicle, false, true) == false)
                 selectedLauncherVehicle = "";
         }
-        if
-        (
-            selectedVehicle == null ||
-            selectedVehicle.launcherCtrl == null ||
-            selectedVehicle.launcherCtrl.launchers.Any
-            (
-                (Launcher launcher) => 
-                    launcher.enabled && launcher.vehicleNames.Contains(selectedLauncherVehicle)
-                    && launcher.vehicleCounts[launcher.vehicleNames.IndexOf(selectedLauncherVehicle)] > 0
-            ) == false
-        )
+
+        bool hasLauncherCtrl = (selectedVehicle != null && selectedVehicle.launcherCtrl != null);
+        bool hasAvailableLauncher = false;
+        if (hasLauncherCtrl)
+        {
+            foreach (Launcher launcher in selectedVehicle.launcherCtrl.launchers)
+            {
+                if (launcher.enabled)
+                {
+                    int vehicleIndex = launcher.vehicleNames.IndexOf(selectedLauncherVehicle);
+                    if (vehicleIndex >= 0 && launcher.vehicleCounts[vehicleIndex] > 0)
+                    {
+                        hasAvailableLauncher = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (!hasAvailableLauncher)
         {
             // No launcher available for the selected weapon. (perhaps due to damage)
             selectedLauncherVehicle = "";
@@ -218,9 +243,9 @@ public class VehicleSelector : MonoBehaviour
                 {
                     GUILayout.Label("Unit: " + selectedVehicle.typeName + " (" + selectedVehicle.armorModule.armorPoint.ToString("F0") + "/" + selectedVehicle.armorModule.maxArmorPoint.ToString("F0") + ")" + " Side: " + selectedVehicle.side.ToString());
 
-                    if (selectedVehicle.GetComponent<GuidanceModule>() != null)
+                    GuidanceModule guidanceModule = selectedVehicle.GetComponent<GuidanceModule>();
+                    if (guidanceModule != null)
                     {
-                        GuidanceModule guidanceModule = selectedVehicle.GetComponent<GuidanceModule>();
                         GUILayout.Label("Guidance: " + guidanceModule.GetType().Name);
                         if (guidanceModule.targetTrack != null)
                             GUILayout.Label(guidanceModule.targetTrack.vehicleTypeName + "(" + guidanceModule.targetTrack.age.ToString("F0") + "): " + Vector3.Distance(selectedVehicle.position, guidanceModule.targetTrack.predictedPosition).ToString("F0"));
@@ -233,40 +258,40 @@ public class VehicleSelector : MonoBehaviour
                     if(selectedVehicle.launcherCtrl != null && selectedVehicle.launcherCtrl.launchers.Count > 0)
                     {
                         GUILayout.Label("Weapon: ");
-                        List<string> launcherVehicles = new List<string>();
-                        List<int> launcherVehicleCount = new List<int>();
+                        _launcherVehicles.Clear();
+                        _launcherVehicleCount.Clear();
                         foreach (Launcher launcher in selectedVehicle.launcherCtrl.launchers)
                         {
                             if (launcher.enabled == false) continue;
                             for (int j = 0; j < launcher.vehicleNames.Count; ++j)
                             {
-                                if (launcherVehicles.Contains(launcher.vehicleNames[j]))
+                                if (_launcherVehicles.Contains(launcher.vehicleNames[j]))
                                 {
-                                    launcherVehicleCount[launcherVehicles.IndexOf(launcher.vehicleNames[j])] += launcher.vehicleCounts[j];
+                                    _launcherVehicleCount[_launcherVehicles.IndexOf(launcher.vehicleNames[j])] += launcher.vehicleCounts[j];
                                 }
                                 else
                                 {
-                                    launcherVehicles.Add(launcher.vehicleNames[j]);
-                                    launcherVehicleCount.Add(launcher.vehicleCounts[j]);
+                                    _launcherVehicles.Add(launcher.vehicleNames[j]);
+                                    _launcherVehicleCount.Add(launcher.vehicleCounts[j]);
                                 }
                             }
                         }
 
-                        if (launcherVehicles.Count > 0)
+                        if (_launcherVehicles.Count > 0)
                         {
-                            for (int j = 0; j < launcherVehicles.Count; ++j)
+                            for (int j = 0; j < _launcherVehicles.Count; ++j)
                             {
-                                bool wasSelected = selectedLauncherVehicle == launcherVehicles[j];
-                                if (launcherVehicleCount[j] == 0)
+                                bool wasSelected = selectedLauncherVehicle == _launcherVehicles[j];
+                                if (_launcherVehicleCount[j] == 0)
                                 {
                                     if (wasSelected)
                                         selectedLauncherVehicle = "";
                                     continue;
                                 }
 
-                                if (GUILayout.Toggle(wasSelected, launcherVehicles[j] + " x" + launcherVehicleCount[j].ToString(), "button", GUILayout.Height(15f)))
+                                if (GUILayout.Toggle(wasSelected, _launcherVehicles[j] + " x" + _launcherVehicleCount[j].ToString(), "button", GUILayout.Height(15f)))
                                 {
-                                    selectedLauncherVehicle = launcherVehicles[j];
+                                    selectedLauncherVehicle = _launcherVehicles[j];
                                 }
                                 else
                                 {
@@ -281,12 +306,31 @@ public class VehicleSelector : MonoBehaviour
                         }
                     }
 
-                    if(selectedVehicle.airstripCtrl != null && selectedVehicle.airstripCtrl.airStrips.Count > 0
-                        && 
-                        (selectedVehicle.airstripCtrl.vehicleCounts.Any((int v) => v > 0)
-                        || selectedVehicle.airstripCtrl.airStrips.Any((Airstrip airStrip) => airStrip.vehicleAttached != null && (airStrip.vehicleIsDeploying || airStrip.vehicleIsLaunching))
-                        )
-                    )
+                    bool hasAirStrip = selectedVehicle.airstripCtrl != null && selectedVehicle.airstripCtrl.airStrips.Count > 0;
+                    bool hasAircrafts = false;
+                    if(hasAirStrip)
+                    {
+                        foreach (int vehicleCount in selectedVehicle.airstripCtrl.vehicleCounts)
+                        {
+                            if (vehicleCount > 0)
+                            {
+                                hasAircrafts = true;
+                                break;
+                            }
+                        }
+                        if (hasAircrafts == false)
+                        {
+                            foreach (Airstrip airStrip in selectedVehicle.airstripCtrl.airStrips)
+                            {
+                                if (airStrip.vehicleAttached != null && (airStrip.vehicleIsDeploying || airStrip.vehicleIsLaunching))
+                                {
+                                    hasAircrafts = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (hasAircrafts)
                     {
                         GUILayout.Label("Flight Deck:");
                         for(int n = 0; n < selectedVehicle.airstripCtrl.vehicles.Count; ++n)
@@ -314,7 +358,7 @@ public class VehicleSelector : MonoBehaviour
                                 stripState = "Landing";
                             if(a.vehicleIsDeploying && a.vehicleProgress == 100f)
                             {
-                                if (Vehicle.sVehicleIsDeployOnly.ContainsKey(a.vehicleAttached.typeName) && Vehicle.sVehicleIsDeployOnly[a.vehicleAttached.typeName] == true)
+                                if (VehicleDatabase.sVehicleIsDeployOnly.ContainsKey(a.vehicleAttached.typeName) && VehicleDatabase.sVehicleIsDeployOnly[a.vehicleAttached.typeName] == true)
                                 {
                                     bool retract = GUILayout.Button("Retract " + a.vehicleAttached.typeName, "button", GUILayout.Height(15f));
                                     if (retract)

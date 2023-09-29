@@ -6,9 +6,14 @@ using UnityEngine;
 
 public class ArmorModule : MonoBehaviour
 {
+    private Vehicle _cachedSelf;
     private Vehicle self
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     public float maxArmorPoint;

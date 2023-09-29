@@ -9,9 +9,9 @@ public class AAM : Vehicle
 {
     public override void OnNewTrack(Track track, string source)
     {
-        if (Vehicle.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air
-            && Vehicle.sVehicleCanEngage[typeName][(int)Vehicle.sVehicleTypes[track.vehicleTypeName]]
-            && Vehicle.sVehicleCanBeEngaged[track.vehicleTypeName][(int)Vehicle.sVehicleTypes[typeName]])
+        if (VehicleDatabase.sVehicleTypes[track.vehicleTypeName] == VehicleType.Air
+            && VehicleDatabase.sVehicleCanEngage[typeName][(int)VehicleDatabase.sVehicleTypes[track.vehicleTypeName]]
+            && VehicleDatabase.sVehicleCanBeEngaged[track.vehicleTypeName][(int)VehicleDatabase.sVehicleTypes[typeName]])
         {
             base.OnNewTrack(track, source);
             this.StartCoroutine(TrackTactic(track));

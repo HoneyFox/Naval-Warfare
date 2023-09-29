@@ -8,7 +8,15 @@ using UnityEngine;
 public class GuidanceModule : MonoBehaviour
 {
     public Track targetTrack;
-    public Vehicle self { get { return this.gameObject.GetComponent<Vehicle>(); } }
+    private Vehicle _cachedSelf;
+    public Vehicle self
+    {
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
+    }
     public bool requiresFireControl = false;
     public bool requiresLockBeforeFiring = true;
 

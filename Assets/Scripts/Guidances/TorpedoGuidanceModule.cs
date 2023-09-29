@@ -66,7 +66,7 @@ public class TorpedoGuidanceModule : GuidanceModule
                         ? self.maxSpeed * 0.95f : self.maxSpeed * 0.85f;
         }
 
-        self.GetComponentsInChildren<ParticleEmitter>().ToList().ForEach((ParticleEmitter pe) => { pe.emit = (self.position.y < 0); });
+        self.GetComponentsInChildren<ParticleSystem>().ToList().ForEach((ParticleSystem ps) => { var pse = ps.emission; pse.enabled = (self.position.y < 0); });
 
         // Auto Enable Logic.
         if (hasInitiallyDisabled == false)

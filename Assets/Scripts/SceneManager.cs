@@ -8,14 +8,14 @@ public class SceneManager : MonoSingleton<SceneManager>
 {
 
     public List<Vehicle> vehicles = new List<Vehicle>();
-
+    public VehicleSelector vehicleSelector;
     public AnimationCurve altitudeDragCurve;
 
 	// Use this for initialization
 	void Start () 
     {
 	    // Test.
-        GameObject obj1 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
+        GameObject obj1 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v1 = obj1.GetComponent<Vehicle>();
         v1.side = 0;
         obj1.transform.parent = SceneManager.instance.transform.Find("Side 0");
@@ -25,7 +25,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         obj1.transform.localPosition = new Vector3(42000f, 0f, 1000f);
         obj1.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
 
-        GameObject obj2 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
+        GameObject obj2 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v2 = obj2.GetComponent<Vehicle>();
         v2.side = 1;
         obj2.transform.parent = SceneManager.instance.transform.Find("Side 1");
@@ -39,7 +39,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         vehicles.Add(v1);
         vehicles.Add(v2);
 
-        GameObject obj3 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["OH Perry FFG"]);
+        GameObject obj3 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["OH Perry FFG"]);
         Vehicle v3 = obj3.GetComponent<Vehicle>();
         v3.side = 0;
         obj3.transform.parent = SceneManager.instance.transform.Find("Side 0");
@@ -49,7 +49,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         obj3.transform.localPosition = new Vector3(28000f, 0f, 2000f);
         obj3.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
 
-        GameObject obj4 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["OH Perry FFG"]);
+        GameObject obj4 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["OH Perry FFG"]);
         Vehicle v4 = obj4.GetComponent<Vehicle>();
         v4.side = 1;
         obj4.transform.parent = SceneManager.instance.transform.Find("Side 1");
@@ -63,7 +63,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         vehicles.Add(v3);
         vehicles.Add(v4);
         
-        GameObject obj5 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Kilo SSK"]);
+        GameObject obj5 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Kilo SSK"]);
         Vehicle v5 = obj5.GetComponent<Vehicle>();
         v5.side = 0;
         obj5.transform.parent = SceneManager.instance.transform.Find("Side 0");
@@ -73,7 +73,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         obj5.transform.localPosition = new Vector3(9000f, -50f, 4000f);
         obj5.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
 
-        GameObject obj6 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Kilo SSK"]);
+        GameObject obj6 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Kilo SSK"]);
         Vehicle v6 = obj6.GetComponent<Vehicle>();
         v6.side = 1;
         obj6.transform.parent = SceneManager.instance.transform.Find("Side 1");
@@ -87,7 +87,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         vehicles.Add(v5);
         vehicles.Add(v6);
 
-        GameObject obj7 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Wasp LHD"]);
+        GameObject obj7 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Wasp LHD"]);
         Vehicle v7 = obj7.GetComponent<Vehicle>();
         v7.side = 0;
         obj7.transform.parent = SceneManager.instance.transform.Find("Side 0");
@@ -97,7 +97,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         obj7.transform.localPosition = new Vector3(44000f, 0f, 1500f);
         obj7.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
 
-        GameObject obj8 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Wasp LHD"]);
+        GameObject obj8 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Wasp LHD"]);
         Vehicle v8 = obj8.GetComponent<Vehicle>();
         v8.side = 1;
         obj8.transform.parent = SceneManager.instance.transform.Find("Side 1");
@@ -111,7 +111,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         vehicles.Add(v7);
         vehicles.Add(v8);
 
-        GameObject obj9 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
+        GameObject obj9 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v9 = obj9.GetComponent<Vehicle>();
         v9.side = 0;
         obj9.transform.parent = SceneManager.instance.transform.Find("Side 0");
@@ -121,7 +121,7 @@ public class SceneManager : MonoSingleton<SceneManager>
         obj9.transform.localPosition = new Vector3(43000f, 0f, 2000f);
         obj9.transform.localRotation = Quaternion.Euler(0f, 270f, 0f);
 
-        GameObject obj10 = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths["Arleigh Burke DDG"]);
+        GameObject obj10 = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths["Arleigh Burke DDG"]);
         Vehicle v10 = obj10.GetComponent<Vehicle>();
         v10.side = 1;
         obj10.transform.parent = SceneManager.instance.transform.Find("Side 1");

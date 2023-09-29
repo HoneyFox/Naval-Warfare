@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class Sensor : MonoBehaviour
@@ -56,6 +57,9 @@ public class Sensor : MonoBehaviour
     public int maxTrackAllowed = 1;
     public List<Track> tracks = new List<Track>();
 
+    private List<Track> _newTracks = new List<Track>();
+    private List<Track> _tracksLostByTracker = new List<Track>();
+
     void Start()
     {
 
@@ -67,22 +71,49 @@ public class Sensor : MonoBehaviour
 
         if (Time.time > lastUpdateTime + updatePeriod)
         {
-            List<Track> newTracks = new List<Track>();
+            _newTracks.Clear();
+            _tracksLostByTracker.Clear(); 
             foreach (Vehicle vehicle in SceneManager.instance.vehicles)
             {
                 if (vehicle == null) continue;
-                if (Vehicle.sVehicleCanBeTracked[vehicle.typeName] == false) continue;
+                if (VehicleDatabase.sVehicleCanBeTracked[vehicle.typeName] == false) continue;
                 if (vehicle.side == self.side) continue;
                 if (vehicle == self) continue;
 
                 if (CheckIfDetected(vehicle))
                 {
-                    if (self.sensorCtrl.tracksDetected.Exists((Track trk) => trk.target == vehicle) == false && newTracks.Exists((Track trk2) => trk2.target == vehicle) == false)
+                    // This sensor can detect the vehicle.
+
+                    Track existingTrack = null;
+                    foreach (Track trk in self.sensorCtrl.tracksDetected)
                     {
+                        if (trk.target == vehicle)
+                        {
+                            existingTrack = trk;
+                            break;
+                        }
+                    }
+
+                    bool noExistingTrack = (existingTrack == null);
+                    if (noExistingTrack)
+                    {
+                        foreach (Track trk in _newTracks)
+                        {
+                            if (trk.target == vehicle)
+                            {
+                                noExistingTrack = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (noExistingTrack)
+                    {
+                        // It's a new track that is not detected by any sensor (not just this sensor).
                         if (canSearchNewTrack)
                         {
                             Track newTrack = new Track(self, vehicle, TrackId.Unknown);
-                            newTracks.Add(newTrack);
+                            _newTracks.Add(newTrack);
 
                             float distance = Vector3.Distance(vehicle.position, this.transform.position);
                             Vector3 detectError = new Vector3(UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance));
@@ -92,13 +123,12 @@ public class Sensor : MonoBehaviour
                     }
                     else
                     {
+                        // It's an existing track and this sensor can contribute to it.
                         if (canUpdateOldTrack)
                         {
-                            Track existingTrack = self.sensorCtrl.tracksDetected.Find((Track trk) => trk.target == vehicle);
-
                             float distance = Vector3.Distance(vehicle.position, this.transform.position);
                             Vector3 detectError = new Vector3(UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance));
-                            if((Time.time - existingTrack.timeOfDetection) * identifyCapability * existingTrack.target.identifyFactor >= 100f)
+                            if ((Time.time - existingTrack.timeOfDetection) * identifyCapability * existingTrack.target.identifyFactor >= 100f)
                             {
                                 TrackId oldId = existingTrack.identification;
                                 if (vehicle.side == -1)
@@ -138,7 +168,7 @@ public class Sensor : MonoBehaviour
                             JammerModule[] jammers = existingTrack.target.GetComponents<JammerModule>();
                             if (jammers != null && jammers.Length > 0)
                             {
-                                for(int i = 0; i < jammers.Length; ++i)
+                                for (int i = 0; i < jammers.Length; ++i)
                                 {
                                     jammers[i].OnReceivingSensorAccess(self, this, existingTrack);
                                 }
@@ -146,9 +176,28 @@ public class Sensor : MonoBehaviour
                         }
                     }
                 }
+                else
+                {
+                    // This sensor cannot detect the vehicle.
+                    Track lostTrack = null;
+                    foreach (Track trk in tracks)
+                    {
+                        if (trk.target == vehicle)
+                        {
+                            lostTrack = trk;
+                            break;
+                        }
+                    }
+                    if(lostTrack != null)
+                    {
+                        // It's an existing track but cannot be detected by this sensor. Send it back to sensorCtrl and see if other sensors can maintain the track.
+                        tracks.Remove(lostTrack);
+                        _tracksLostByTracker.Add(lostTrack);
+                    }
+                }
             }
 
-            foreach (Track newTrack in newTracks)
+            foreach (Track newTrack in _newTracks)
             {
                 self.sensorCtrl.AddTrack(newTrack);
                 if (isTracker && tracks.Count < maxTrackAllowed && isToggled)
@@ -157,78 +206,16 @@ public class Sensor : MonoBehaviour
                     self.sensorCtrl.tracksToBeAssignedToTracker.Add(newTrack);
                 self.OnNewTrack(newTrack, sensorName);
             }
-            
+
             for (int i = 0; i < tracks.Count; ++i)
             {
                 if(tracks[i].target == null || tracks[i].isLost == true)
                 {
+                    // Vehicle is destroyed or track age is too high.
                     tracks.RemoveAt(i);
                     i--;
                 }
             }
-
-            List<Track> tracksLostByTracker = new List<Track>();
-            foreach(Track track in tracks)
-            {
-                if (track.target == null) continue;
-                if (CheckIfDetected(track.target))
-                {
-                    float distance = Vector3.Distance(track.target.position, this.transform.position);
-                    Vector3 detectError = new Vector3(UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance), UnityEngine.Random.Range(-error * distance / detectMaxDistance, error * distance / detectMaxDistance));
-                    if ((Time.time - track.timeOfDetection) * identifyCapability * track.target.identifyFactor >= 100f)
-                    {
-                        TrackId oldId = track.identification;
-                        if (track.target.side == -1)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.Neutrual);
-                        else if (track.target.side != self.side)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.Hostile);
-                        else if (track.target.side == self.side)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.Friendly);
-                        else
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, track.identification);
-                        if (oldId != track.identification)
-                        {
-                            //Debug.Log(self.typeName + "'s " + sensorName + " has identified " + track.vehicleTypeName + " from " + oldId.ToString() + " to " + track.identification.ToString());
-                        }
-                    }
-                    else if ((Time.time - track.timeOfDetection) * identifyCapability * track.target.identifyFactor >= 75f)
-                    {
-                        TrackId oldId = track.identification;
-                        if (track.target.side == -1)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.Neutrual);
-                        else if (track.target.side != self.side && track.identification == TrackId.Unknown)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.AssumedHostile);
-                        else if (track.target.side == self.side && track.identification == TrackId.Unknown)
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, TrackId.AssumedFriendly);
-                        else
-                            track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, track.identification);
-                        if (oldId != track.identification)
-                        {
-                            //Debug.Log(self.typeName + "'s " + sensorName + " has identified " + track.vehicleTypeName + " from " + oldId.ToString() + " to " + track.identification.ToString());
-                        }
-                    }
-                    else
-                    {
-                        track.UpdateTrack(track.target.position + detectError, track.target.velocity + detectError * 0.1f, track.identification);
-                    }
-                    JammerModule[] jammers = track.target.GetComponents<JammerModule>();
-                    if (jammers != null && jammers.Length > 0)
-                    {
-                        for (int i = 0; i < jammers.Length; ++i)
-                        {
-                            jammers[i].OnReceivingSensorAccess(self, this, track);
-                        }
-                    }
-                }
-                else
-                {
-                    tracksLostByTracker.Add(track);
-                }
-            }
-
-            foreach (Track trk in tracksLostByTracker)
-                tracks.Remove(trk);
-            self.sensorCtrl.tracksToBeAssignedToTracker.AddRange(tracksLostByTracker);
 
             lastUpdateTime = Time.time;
         }
@@ -237,41 +224,51 @@ public class Sensor : MonoBehaviour
     public virtual bool CheckIfDetected(Vehicle vehicle)
     {
         if (vehicle == null) return false;
+        if (vehicle.onlyVisibleTo != null && vehicle.onlyVisibleTo != self) return false;
         if (this.transform.position.y < detectorMaxDepth || this.transform.position.y > detectorMaxHeight) return false;
         float distance = Vector3.Distance(vehicle.position, this.transform.position);
-        if (vehicle.position.y >= detectMaxDepth && vehicle.position.y <= detectMaxHeight)
+        if (vehicle.position.y < detectMaxDepth || vehicle.position.y > detectMaxHeight) return false;
+        bool canBeDetected = (Sensor.IsPureCounterSensorType(this.sensorType) == false && distance * (1.0f - vehicle.stealthFactor) < detectMaxDistance);
+        if (!canBeDetected)
         {
-            if 
-            (
-                (Sensor.IsPureCounterSensorType(this.sensorType) == false && distance * (1.0f - vehicle.stealthFactor) < detectMaxDistance) || 
-                (vehicle.sensorCtrl != null && vehicle.sensorCtrl.sensors.Any((Sensor sensor) => sensor.enabled && sensor.isToggled && sensor.counterSensorType == this.sensorType && distance < detectMaxDistance * detectMaxDistance * 0.5f && sensor.transform.position.y < sensor.detectMaxHeight && sensor.transform.position.y > sensor.detectorMaxDepth))
-            )
+            if (vehicle.sensorCtrl != null)
             {
-                float angleDiff = Vector3.Angle(vehicle.position - this.transform.position, this.transform.TransformDirection(centerVector));
-                if (angleDiff < halfAngle)
+                foreach (Sensor sensor in vehicle.sensorCtrl.sensors)
                 {
-                    if (affectedByEarthCurve)
+                    if (sensor.enabled && sensor.isToggled 
+                        && sensor.counterSensorType == this.sensorType 
+                        && distance < detectMaxDistance * detectMaxDistance * 0.5f 
+                        && sensor.transform.position.y < sensor.detectMaxHeight 
+                        && sensor.transform.position.y > sensor.detectorMaxDepth)
                     {
-                        double earthRadius = 6360000f;
-                        double angle = Math.Acos(earthRadius / (vehicle.position.y + vehicle.mastHeight + earthRadius)) + Math.Acos(earthRadius / (this.transform.position.y + earthRadius));
+                        canBeDetected = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (canBeDetected)
+        {
+            float angleDiff = Vector3.Angle(vehicle.position - this.transform.position, this.transform.TransformDirection(centerVector));
+            if (angleDiff < halfAngle)
+            {
+                if (affectedByEarthCurve)
+                {
+                    double earthRadius = 6360000f;
+                    double angle = Math.Acos(earthRadius / (vehicle.position.y + vehicle.mastHeight + earthRadius)) + Math.Acos(earthRadius / (this.transform.position.y + earthRadius));
 
-                        if (distance < angle * earthRadius)
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                    if (distance < angle * earthRadius)
+                    {
+                        return true;
                     }
                     else
                     {
-                        return true;
+                        return false;
                     }
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
             }
             else
@@ -280,7 +277,9 @@ public class Sensor : MonoBehaviour
             }
         }
         else
+        {
             return false;
+        }
     }
 
     public virtual void OnDamage()

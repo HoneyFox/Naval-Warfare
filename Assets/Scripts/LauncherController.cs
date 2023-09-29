@@ -5,9 +5,14 @@ using System.Linq;
 
 public class LauncherController : MonoBehaviour 
 {
+    private Vehicle _cachedSelf;
     private Vehicle self
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     public List<Launcher> launchers = new List<Launcher>();
@@ -98,20 +103,20 @@ public class LauncherController : MonoBehaviour
     public bool CanEngageWith(Track track, string vehicleName, bool considerLoaded = true, bool considerRange = true)
     {
         string trackTypeName = track.vehicleTypeName;
-        Vehicle.VehicleType trackVehicleType = Vehicle.sVehicleTypes[trackTypeName];
+        Vehicle.VehicleType trackVehicleType = VehicleDatabase.sVehicleTypes[trackTypeName];
         foreach (Launcher launcher in launchers)
         {
             if (launcher.vehicleNames.Contains(vehicleName) == false) continue;
             if (launcher.enabled == false) continue;
             if (launcher.vehicleCounts[launcher.vehicleNames.IndexOf(vehicleName)] <= 0 || (launcher.isLoaded == false && considerLoaded == true)) continue;
 
-            bool canEngage = Vehicle.sVehicleCanEngage[vehicleName][(int)trackVehicleType];
-            bool canBeEngaged = Vehicle.sVehicleCanBeEngaged[track.vehicleTypeName][(int)Vehicle.sVehicleTypes[vehicleName]];
+            bool canEngage = VehicleDatabase.sVehicleCanEngage[vehicleName][(int)trackVehicleType];
+            bool canBeEngaged = VehicleDatabase.sVehicleCanBeEngaged[track.vehicleTypeName][(int)VehicleDatabase.sVehicleTypes[vehicleName]];
             if (canEngage && canBeEngaged)
             {
                 float range = Vector3.Distance(self.position, track.predictedPosition);
 
-                if (range <= Vehicle.sVehicleRanges[vehicleName] || considerRange == false)
+                if (range <= VehicleDatabase.sVehicleRanges[vehicleName] || considerRange == false)
                 {
                     return true;
                 }
@@ -125,7 +130,7 @@ public class LauncherController : MonoBehaviour
         Dictionary<string, float> candidates = new Dictionary<string,float>();
 
         string trackTypeName = track.vehicleTypeName;
-        Vehicle.VehicleType trackVehicleType = Vehicle.sVehicleTypes[trackTypeName];
+        Vehicle.VehicleType trackVehicleType = VehicleDatabase.sVehicleTypes[trackTypeName];
         foreach(Launcher launcher in launchers)
         {
             foreach(string vehicle in launcher.vehicleNames)
@@ -133,26 +138,26 @@ public class LauncherController : MonoBehaviour
                 if (launcher.vehicleCounts[launcher.vehicleNames.IndexOf(vehicle)] <= 0 || (launcher.isLoaded == false && considerReload)) continue;
                 if (launcher.enabled == false) continue;
 
-                if (Vehicle.sVehicleCanEngage.ContainsKey(vehicle) == false)
+                if (VehicleDatabase.sVehicleCanEngage.ContainsKey(vehicle) == false)
                     Debug.LogError("Error: No Engage List for " + vehicle);
-                bool canEngage = Vehicle.sVehicleCanEngage[vehicle][(int)trackVehicleType];
-                bool canBeEngaged = Vehicle.sVehicleCanBeEngaged[track.vehicleTypeName][(int)Vehicle.sVehicleTypes[vehicle]];
+                bool canEngage = VehicleDatabase.sVehicleCanEngage[vehicle][(int)trackVehicleType];
+                bool canBeEngaged = VehicleDatabase.sVehicleCanBeEngaged[track.vehicleTypeName][(int)VehicleDatabase.sVehicleTypes[vehicle]];
 
                 if(canEngage && canBeEngaged)
                 {
-                    float eta = Vector3.Distance(self.position, track.predictedPositionAtTime(0)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    float eta = Vector3.Distance(self.position, track.predictedPositionAtTime(0)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                    eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
 
                     float range = Vector3.Distance(self.position, track.predictedPositionAtTime(eta));
                     
-                    if (range <= Vehicle.sVehicleRanges[vehicle] || considerReload == false)
+                    if (range <= VehicleDatabase.sVehicleRanges[vehicle] || considerReload == false)
                     {
                         if (candidates.ContainsKey(vehicle) == false)
-                            candidates.Add(vehicle, Vehicle.sVehicleRanges[vehicle]);
+                            candidates.Add(vehicle, VehicleDatabase.sVehicleRanges[vehicle]);
                     }
                 }
             }
@@ -181,14 +186,14 @@ public class LauncherController : MonoBehaviour
                 if (launcher.vehicleCounts[launcher.vehicleNames.IndexOf(vehicle)] <= 0 || (launcher.isLoaded == false && considerReload)) continue;
                 if (launcher.enabled == false) continue;
 
-                bool canEngage = Vehicle.sVehicleCanEngage[vehicle][3];
+                bool canEngage = VehicleDatabase.sVehicleCanEngage[vehicle][3];
                 if(canEngage)
                 {
                     float range = Vector3.Distance(this.GetComponent<Vehicle>().position, position);
-                    if (range <= Vehicle.sVehicleRanges[vehicle] || considerRange == false)
+                    if (range <= VehicleDatabase.sVehicleRanges[vehicle] || considerRange == false)
                     {
                         if (candidates.ContainsKey(vehicle) == false)
-                            candidates.Add(vehicle, Vehicle.sVehicleRanges[vehicle]);
+                            candidates.Add(vehicle, VehicleDatabase.sVehicleRanges[vehicle]);
                     }
                 }
             }

@@ -55,10 +55,10 @@ public class Airstrip : MonoBehaviour
         if (enabled == false) return false;
 
         if (self.airstripCtrl.vehicles.Contains(vehicleName) == false || self.airstripCtrl.vehicleCounts[self.airstripCtrl.vehicles.IndexOf(vehicleName)] == 0) return false;
-        if (canLaunchAir == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Air) return false;
-        if (canLaunchSurf == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Surf) return false;
-        if (canLaunchSub == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Sub) return false;
-        if (Vehicle.sVehicleTakeOffMethods.ContainsKey(vehicleName) == false || Vehicle.sVehicleTakeOffMethods[vehicleName].Any((string value) => value == takeOffMethod) == false) return false;
+        if (canLaunchAir == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Air) return false;
+        if (canLaunchSurf == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Surf) return false;
+        if (canLaunchSub == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Sub) return false;
+        if (VehicleDatabase.sVehicleTakeOffMethods.ContainsKey(vehicleName) == false || VehicleDatabase.sVehicleTakeOffMethods[vehicleName].Any((string value) => value == takeOffMethod) == false) return false;
 
         return true;
     }
@@ -69,12 +69,12 @@ public class Airstrip : MonoBehaviour
         if (enabled == false) return false;
 
         if(self.airstripCtrl.vehicles.Contains(vehicleName) == false || self.airstripCtrl.vehicleCounts[self.airstripCtrl.vehicles.IndexOf(vehicleName)] == 0) return false;
-        if (canLaunchAir == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Air) return false;
-        if (canLaunchSurf == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Surf) return false;
-        if (canLaunchSub == false && Vehicle.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Sub) return false;
-        if (Vehicle.sVehicleTakeOffMethods.ContainsKey(vehicleName) == false || Vehicle.sVehicleTakeOffMethods[vehicleName].Any((string value) => value == takeOffMethod) == false) return false;
+        if (canLaunchAir == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Air) return false;
+        if (canLaunchSurf == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Surf) return false;
+        if (canLaunchSub == false && VehicleDatabase.sVehicleTypes[vehicleName] == Vehicle.VehicleType.Sub) return false;
+        if (VehicleDatabase.sVehicleTakeOffMethods.ContainsKey(vehicleName) == false || VehicleDatabase.sVehicleTakeOffMethods[vehicleName].Any((string value) => value == takeOffMethod) == false) return false;
 
-        GameObject vehicle = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths[vehicleName]);
+        GameObject vehicle = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths[vehicleName]);
 
         vehicleAttached = vehicle.GetComponent<Vehicle>();
         vehicleAttached.enabled = false;
@@ -94,7 +94,7 @@ public class Airstrip : MonoBehaviour
     {
         if (enabled == false) return;
         if (vehicleAttached == null) return;
-        if (Vehicle.sVehicleIsDeployOnly.ContainsKey(vehicleAttached.typeName) && Vehicle.sVehicleIsDeployOnly[vehicleAttached.typeName] == true) return;
+        if (VehicleDatabase.sVehicleIsDeployOnly.ContainsKey(vehicleAttached.typeName) && VehicleDatabase.sVehicleIsDeployOnly[vehicleAttached.typeName] == true) return;
         if (vehicleIsDeploying == true && vehicleIsUndeploying == false && vehicleProgress == 100f)
         {
             vehicleProgress = 0f;
@@ -115,10 +115,10 @@ public class Airstrip : MonoBehaviour
         if (vehicleAttached != null && vehicleAttached != vehicle && considerOccupation) return false;
         if (enabled == false) return false;
 
-        if (canLandAir == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air) return false;
-        if (canLandSurf == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf) return false;
-        if (canLandSub == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub) return false;
-        if (Vehicle.sVehicleLandMethods.ContainsKey(vehicle.typeName) == false || Vehicle.sVehicleLandMethods[vehicle.typeName].Any((string value) => value == landMethod) == false) return false;
+        if (canLandAir == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air) return false;
+        if (canLandSurf == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf) return false;
+        if (canLandSub == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub) return false;
+        if (VehicleDatabase.sVehicleLandMethods.ContainsKey(vehicle.typeName) == false || VehicleDatabase.sVehicleLandMethods[vehicle.typeName].Any((string value) => value == landMethod) == false) return false;
 
         return true;
     }
@@ -128,10 +128,10 @@ public class Airstrip : MonoBehaviour
         if (vehicleAttached != null && vehicleAttached != vehicle) return false;
         if (enabled == false) return false;
 
-        if (canLandAir == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air) return false;
-        if (canLandSurf == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf) return false;
-        if (canLandSub == false && Vehicle.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub) return false;
-        if (Vehicle.sVehicleLandMethods.ContainsKey(vehicle.typeName) == false || Vehicle.sVehicleLandMethods[vehicle.typeName].Any((string value) => value == landMethod) == false) return false;
+        if (canLandAir == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Air) return false;
+        if (canLandSurf == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Surf) return false;
+        if (canLandSub == false && VehicleDatabase.sVehicleTypes[vehicle.typeName] == Vehicle.VehicleType.Sub) return false;
+        if (VehicleDatabase.sVehicleLandMethods.ContainsKey(vehicle.typeName) == false || VehicleDatabase.sVehicleLandMethods[vehicle.typeName].Any((string value) => value == landMethod) == false) return false;
 
         vehicleAttached = vehicle;
         if(Vector3.Distance(vehicle.transform.position, landStartPoint.position) < approachDistanceThreshold)

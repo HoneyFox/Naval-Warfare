@@ -19,9 +19,14 @@ public class Locomotor : MonoBehaviour
     public float linearAcceleration = 10f;
     public float dragAcceleration = 1f;
 
+    private Vehicle _cachedSelf;
     public Vehicle self 
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     void FixedUpdate() 

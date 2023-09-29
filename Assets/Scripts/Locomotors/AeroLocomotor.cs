@@ -11,11 +11,11 @@ public class AeroLocomotor : Locomotor
             if (self.warheadModule != null)
             {
                 if(Time.time - self.warheadModule.timeOfLaunch > self.warheadModule.safetyTimer)
-                    self.GetComponent<WarheadModule>().Ignite();
+                    self.warheadModule.Ignite();
             }
             else
             {
-                SceneManager.instance.GetComponent<VehicleSelector>().OnVehicleDead(self);
+                SceneManager.instance.vehicleSelector?.OnVehicleDead(self);
                 SceneManager.instance.vehicles.Remove(self);
                 GameObject.Destroy(self.gameObject);
             }
@@ -31,9 +31,9 @@ public class AeroLocomotor : Locomotor
 
     public override void OnDead()
     {
-        if (self.GetComponent<WarheadModule>() != null)
+        if (self.warheadModule != null)
         {
-            self.GetComponent<WarheadModule>().Explode();
+            self.warheadModule.Explode();
         }
         else
         {

@@ -5,9 +5,14 @@ using System.Linq;
 
 public class AirstripController : MonoBehaviour
 {
+    private Vehicle _cachedSelf;
     private Vehicle self
     {
-        get { return this.gameObject.GetComponent<Vehicle>(); }
+        get
+        {
+            if (_cachedSelf == null) _cachedSelf = this.gameObject.GetComponent<Vehicle>();
+            return _cachedSelf;
+        }
     }
 
     public List<string> vehicles = new List<string>();
@@ -96,24 +101,24 @@ public class AirstripController : MonoBehaviour
         List<string> candidates = new List<string>();
 
         string trackTypeName = track.vehicleTypeName;
-        Vehicle.VehicleType trackVehicleType = Vehicle.sVehicleTypes[trackTypeName];
+        Vehicle.VehicleType trackVehicleType = VehicleDatabase.sVehicleTypes[trackTypeName];
         foreach (string vehicle in vehicles)
         {
             if (vehicleCounts[vehicles.IndexOf(vehicle)] <= 0 || (airStrips.Any((Airstrip a) => a.CanTakeOff(vehicle, false)) == false)) continue;
 
-            bool canEngage = Vehicle.sVehicleTaskTypes[vehicle].Any((Vehicle.VehicleType t) => t == trackVehicleType);
+            bool canEngage = VehicleDatabase.sVehicleTaskTypes[vehicle].Any((Vehicle.VehicleType t) => t == trackVehicleType);
             if (canEngage)
             {
-                float eta = Vector3.Distance(self.position, track.predictedPositionAtTime(0)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
-                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicle] / 0.9f;
+                float eta = Vector3.Distance(self.position, track.predictedPositionAtTime(0)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
+                eta = Vector3.Distance(self.position, track.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicle] / 0.9f;
 
                 float range = Vector3.Distance(self.position, track.predictedPositionAtTime(eta));
 
-                if (range <= Vehicle.sVehicleRanges[vehicle] / 2.5f || considerRange == false)
+                if (range <= VehicleDatabase.sVehicleRanges[vehicle] / 2.5f || considerRange == false)
                 {
                     if (candidates.Contains(vehicle) == false)
                         candidates.Add(vehicle);

@@ -55,11 +55,11 @@ public class Launcher : MonoBehaviour
         if (isLoaded == false && currentSalvoCount == 0) return false;
         if (vehicleNames.Contains(vehicleName) == false) return false;
         if (vehicleCounts[vehicleNames.IndexOf(vehicleName)] <= 0) return false;
-        GameObject vehicle = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths[vehicleName]);
+        GameObject vehicle = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths[vehicleName]);
 
-        float eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(0)) / Vehicle.sVehicleMaxSpeed[vehicleName] / 0.9f;
-        eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicleName] / 0.9f;
-        eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(eta)) / Vehicle.sVehicleMaxSpeed[vehicleName] / 0.9f;
+        float eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(0)) / VehicleDatabase.sVehicleMaxSpeed[vehicleName] / 0.9f;
+        eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicleName] / 0.9f;
+        eta = Vector3.Distance(this.transform.position, target.predictedPositionAtTime(eta)) / VehicleDatabase.sVehicleMaxSpeed[vehicleName] / 0.9f;
 
         GuidanceModule guidance = vehicle.GetComponent<GuidanceModule>();
         if (guidance == null)
@@ -88,7 +88,7 @@ public class Launcher : MonoBehaviour
 
                     foreach (DatalinkModule dl in self.GetComponents<DatalinkModule>())
                     {
-                        if (dl.limitTrackedVehicleType == false || dl.trackedVehicleType == Vehicle.sVehicleTypes[target.vehicleTypeName])
+                        if (dl.limitTrackedVehicleType == false || dl.trackedVehicleType == VehicleDatabase.sVehicleTypes[target.vehicleTypeName])
                         {
                             dl.AddReceiver(vehicle.GetComponent<Vehicle>());
                         }
@@ -118,7 +118,7 @@ public class Launcher : MonoBehaviour
 
                         foreach(DatalinkModule dl in self.GetComponents<DatalinkModule>())
                         {
-                            if (dl.limitTrackedVehicleType == false || dl.trackedVehicleType == Vehicle.sVehicleTypes[target.vehicleTypeName])
+                            if (dl.limitTrackedVehicleType == false || dl.trackedVehicleType == VehicleDatabase.sVehicleTypes[target.vehicleTypeName])
                             {
                                 dl.AddReceiver(launchedVehicle);
                             }
@@ -273,7 +273,7 @@ public class Launcher : MonoBehaviour
         if (isLoaded == false && currentSalvoCount == 0) return false; 
         if (vehicleNames.Contains(vehicleName) == false) return false;
         if (vehicleCounts[vehicleNames.IndexOf(vehicleName)] <= 0) return false;
-        GameObject vehicle = ResourceManager.LoadPrefab(Vehicle.sVehiclePrefabPaths[vehicleName]);
+        GameObject vehicle = ResourceManager.LoadPrefab(VehicleDatabase.sVehiclePrefabPaths[vehicleName]);
 
         GuidanceModule guidance = vehicle.GetComponent<GuidanceModule>();
         if (guidance == null)

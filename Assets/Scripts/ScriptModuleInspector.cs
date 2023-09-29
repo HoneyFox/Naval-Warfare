@@ -14,7 +14,7 @@ public class ScriptModuleInspector : Editor
 
     void RegisterUndo()
     {
-        Undo.RegisterUndo(target, "Script Change");
+        Undo.RegisterCompleteObjectUndo(target, "Script Change");
         EditorUtility.SetDirty(target);
     }
 
